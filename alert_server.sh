@@ -5,7 +5,8 @@ function new_commit(){
 		cut helpers/remoteHead -f1 > helpers/remote
 		cd ../ADDA/
 		git rev-parse HEAD > ../d_the_tester/helpers/localHead
-		cd ../d_the_tester/
+		git stash
+		cd ../d_the_tester
 		node check.js > helpers/condition
 		condition=($(<helpers/condition))
 		$condition &&  echo -e "\a" ||  loop_condition=false
@@ -13,12 +14,12 @@ function new_commit(){
 }
 function test(){
 	cd /d/ADDA/
-	git pull
-	npm install
-	npm run db_operations
 	test_loop_condition=true
 	while $test_loop_condition
 	do
+		git pull
+		npm install
+		npm run db_operations
 		npm run test 2> ../d_the_tester/helpers/error
 		cd ../d_the_tester
 		node error_check.js > helpers/error_check
@@ -27,6 +28,7 @@ function test(){
 		$error && echo 'this commit breaked the tests' && git log -1
 		$error && echo -e "\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a" || test_loop_condition=false
 	done
+	echo 'ok'
 }
 while true
 do
